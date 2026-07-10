@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIPERR — Оперативное дело</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="scene">
+    <div class="operative-wall">
+      <div class="wall-texture"></div>
+      <div class="wall-label">Оперативная стена · Дело «VIPERR»</div>
+      <div class="wall-vignette"></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span class="toolbar-meta">Секретно · для служебного пользования</span>
+      <span class="toolbar-title">Розыск семьи Вайпер</span>
+    </div>
+    <div class="toolbar-actions">
+      <button class="tool-btn" id="zoomOut">−</button>
+      <button class="tool-btn" id="zoomIn">+</button>
+      <button class="tool-btn" id="resetView">⌖</button>
+    </div>
+  </div>
+
+  <div class="tree-viewport" id="treeViewport">
+    <div class="tree-stage" id="treeStage">
+      <svg class="tree-lines" id="treeLines"></svg>
+      <div class="tree-nodes" id="treeNodes"></div>
+    </div>
+  </div>
+
+  <div class="profile-overlay" id="profileOverlay" hidden></div>
+
+  <aside class="profile-panel" id="profilePanel" aria-hidden="true">
+    <button class="profile-close" id="profileClose" aria-label="Закрыть">×</button>
+    <article class="a4-full" id="a4Full">
+      <div class="a4-full__clip" aria-hidden="true"></div>
+      <div class="a4-full__page">
+        <header class="a4-full__head">
+          <div class="a4-full__head-left">
+            <span class="a4-full__org">Оперотдел VIPERR</span>
+            <span class="a4-full__case" id="profileCase"></span>
+          </div>
+          <span class="a4-full__stamp" id="profileStamp">РАЗЫСКИВАЕТСЯ</span>
+        </header>
+
+        <h1 class="a4-full__title">Материалы уголовного дела</h1>
+        <p class="a4-full__subtitle" id="profileGen"></p>
+
+        <div class="a4-full__photo-wrap">
+          <div class="a4-full__photo" id="profileHero">
+            <div class="a4-full__photo-lines" aria-hidden="true"></div>
+            <div class="a4-full__initials" id="profileInitials"></div>
+          </div>
+          <p class="a4-full__photo-cap">Фотография для опознания</p>
+        </div>
+
+        <dl class="a4-full__fields" id="profileFields">
+          <dt>ФИО</dt>
+          <dd id="profileName"></dd>
+          <dt>Роль в деле</dt>
+          <dd id="profileRole"></dd>
+        </dl>
+
+        <dl class="a4-full__meta" id="profileMeta"></dl>
+
+        <section class="a4-full__story">
+          <h2 class="a4-full__story-head">Показания и материалы</h2>
+          <div class="a4-full__story-text" id="profileStory"></div>
+        </section>
+
+        <footer class="a4-full__foot">
+          <span>Лист дела · VIPERR</span>
+          <span id="profileDate"></span>
+        </footer>
+      </div>
+    </article>
+  </aside>
+
+  <script src="family-data.js"></script>
+  <script src="relations.js"></script>
+  <script src="tree.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
