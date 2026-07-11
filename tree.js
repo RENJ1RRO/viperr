@@ -151,6 +151,7 @@
     const maisSpan = layoutSubtree('mais', maisX, gen1Y, 'mais', nodes, links);
     const creedX = maisX + maisSpan + BRANCH_GAP;
     layoutSubtree('creed', creedX, gen1Y, 'creed', nodes, links);
+    links.push({ type: 'sibling', from: 'mais', to: 'creed', branch: 'mais' });
     placeOutsiders(nodes, links);
 
     const minX = Math.min(...nodes.map((n) => n.x)) - PAD;
@@ -357,17 +358,20 @@
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       const isCouple = l.type === 'couple';
       const isEx = l.type === 'ex-spouse';
+      const isSibling = l.type === 'sibling';
       path.setAttribute(
         'class',
         'red-string' +
           (isCouple ? ' red-string--couple' : '') +
-          (isEx ? ' red-string--ex' : ' red-string--parent')
+          (isEx ? ' red-string--ex' : '') +
+          (isSibling ? ' red-string--sibling' : '') +
+          (!isCouple && !isEx && !isSibling ? ' red-string--parent' : '')
       );
 
-      if (isCouple || isEx) {
+      if (isCouple || isEx || isSibling) {
         const f = clipPoint(l.fromNode);
         const t = clipPoint(l.toNode);
-        path.setAttribute('d', stringPath(f.x, f.y, t.x, t.y, isEx ? 8 : 6));
+        path.setAttribute('d', stringPath(f.x, f.y, t.x, t.y, isEx ? 8 : isSibling ? 5 : 6));
       } else {
         const f = bottomPoint(l.fromNode);
         const t = clipPoint(l.toNode);
