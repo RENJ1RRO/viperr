@@ -81,6 +81,10 @@
       return `${name} (бывш${isFemale(ex) ? 'ая' : 'ий'} ${spouseLabel(ex)})`;
     }
 
+    if (from.sibling === toId || to.sibling === fromId) {
+      return `${name} (${siblingLabel(to)})`;
+    }
+
     const childOfFrom = Object.values(FAMILY.members).find(
       (m) => m.parent === fromId && m.spouse === toId
     );
@@ -112,6 +116,7 @@
     if (from.parent) links.push(from.parent);
     if (from.spouse) links.push(from.spouse);
     if (from.exSpouse) links.push(from.exSpouse);
+    if (from.sibling) links.push(from.sibling);
 
     getChildren(viewerId).forEach((childId) => {
       links.push(childId);
