@@ -219,6 +219,11 @@ body {
   opacity: 0.6;
 }
 
+.red-string--sibling {
+  stroke-dasharray: 4 5;
+  opacity: 0.65;
+}
+
 .tree-nodes {
   position: relative;
   z-index: 2;
