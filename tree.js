@@ -14,7 +14,7 @@
     mais: ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli'],
     kai: ['medea', 'yan', 'yuni', 'night', 'kid'],
     vivien: ['rina'],
-    creed: ['madison'],
+    creed: ['madison', 'ron'],
   };
 
   const TILTS = {
@@ -31,6 +31,7 @@
     mia: -2.4,
     olli: 1.6,
     madison: 1.2,
+    ron: -1.4,
     medea: -2.8,
     yan: 1.5,
     krisol: -2,

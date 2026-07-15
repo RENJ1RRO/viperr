@@ -62,6 +62,28 @@
     return ViperRelations.getChildren(id);
   }
 
+  function formatStoryHtml(text) {
+    return text
+      .split(/\n\n+/)
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .map((p) => {
+        if (/^§\s/.test(p) && !p.includes('\n')) {
+          return `<h3 class="a4-full__sec">${p.replace(/^§\s*/, '')}</h3>`;
+        }
+        if (/^§\s/.test(p)) {
+          const [head, ...rest] = p.split('\n');
+          const body = rest.join(' ').trim();
+          return (
+            `<h3 class="a4-full__sec">${head.replace(/^§\s*/, '')}</h3>` +
+            (body ? `<p>${body}</p>` : '')
+          );
+        }
+        return `<p>${p}</p>`;
+      })
+      .join('');
+  }
+
   function addRelationRows(viewerId, targetIds) {
     const shown = new Set();
     targetIds.forEach((targetId) => {
@@ -111,7 +133,7 @@
     addRelationRows(id, ViperRelations.buildProfileLinks(id));
 
     profileStory.innerHTML = m.story
-      ? m.story.split('\n\n').map((p) => `<p>${p}</p>`).join('')
+      ? formatStoryHtml(m.story)
       : '<p class="a4-full__empty">Материалы дела будут добавлены позже.</p>';
 
     overlay.hidden = false;
@@ -145,7 +167,7 @@
     metaRow('Семейный знак', FAMILY.meta.familyGimmick);
 
     profileStory.innerHTML = lore.story
-      ? lore.story.split('\n\n').map((p) => `<p>${p}</p>`).join('')
+      ? formatStoryHtml(lore.story)
       : '';
 
     overlay.hidden = false;
