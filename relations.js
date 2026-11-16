@@ -40,7 +40,7 @@
     const role = member.role || '';
     if (/Сын/.test(role)) return false;
     if (member.isSpouse && role.includes('Супруга')) return true;
-    return /Дочь|ница|Супруга|Жена/.test(role);
+    return /дочь|ница|супруга|жена/i.test(role);
   }
 
   function childLabel(member) {
