@@ -2,11 +2,9 @@
   'use strict';
 
   const FIRST_GENITIVE = {
-    Майс: 'Майса',
+    Кассиан: 'Кассиана',
     Найн: 'Найна',
     Кай: 'Кая',
-    Крид: 'Крида',
-    Энджел: 'Энджел',
     Вивьян: 'Вивьян',
     Михаил: 'Михаила',
     Мэдисон: 'Мэдисона',
@@ -22,7 +20,7 @@
     Олли: 'Олли',
     Крисоль: 'Крисоль',
     Агарес: 'Агарес',
-    Скади: 'Скади',
+    Сэмми: 'Сэмми',
   };
 
   function nameGenitive(fullName) {
@@ -73,6 +71,11 @@
       return `${name} (${parentLabel(to)})`;
     }
 
+    if (from.spouse && to.parent === from.spouse) {
+      const spouse = FAMILY.members[from.spouse];
+      return `${name} (${childLabel(to)} ${nameGenitive(spouse.name)})`;
+    }
+
     if (from.spouse === toId) {
       return `${name} (${spouseLabel(to)})`;
     }
@@ -87,7 +90,7 @@
     }
 
     const childOfFrom = Object.values(FAMILY.members).find(
-      (m) => m.parent === fromId && m.spouse === toId
+      (m) => (m.parent === fromId || (from.spouse && m.parent === from.spouse)) && m.spouse === toId
     );
     if (childOfFrom) {
       return `${name} (${spouseLabel(to)} ${nameGenitive(childOfFrom.name)})`;
@@ -100,7 +103,7 @@
     return name;
   }
 
-  const SIBLING_ORDER = ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli'];
+  const SIBLING_ORDER = ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron'];
 
   function getChildren(id) {
     return Object.values(FAMILY.members)
@@ -115,7 +118,14 @@
     const links = [];
 
     if (from.parent) links.push(from.parent);
-    if (from.spouse) links.push(from.spouse);
+    if (from.spouse) {
+      links.push(from.spouse);
+      getChildren(from.spouse).forEach((childId) => {
+        if (!links.includes(childId)) links.push(childId);
+        const child = FAMILY.members[childId];
+        if (child && child.spouse && !links.includes(child.spouse)) links.push(child.spouse);
+      });
+    }
     if (from.exSpouse) links.push(from.exSpouse);
     if (from.sibling) links.push(from.sibling);
 
