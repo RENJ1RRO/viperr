@@ -21,12 +21,18 @@
     Крисоль: 'Крисоль',
     Агарес: 'Агарес',
     Сэмми: 'Сэмми',
+    Белф: 'Белф',
+    Аарон: 'Аарона',
+    Ной: 'Ноя',
   };
 
   function nameGenitive(fullName) {
     const parts = fullName.trim().split(/\s+/);
     const first = FIRST_GENITIVE[parts[0]] || parts[0];
-    const last = parts[1] === 'Вайпер' ? 'Вайпера' : (parts[1] || '');
+    const rest = parts.slice(1).join(' ');
+    const last = /^Вайпер(?![\p{L}])/u.test(rest)
+      ? 'Вайпера' + rest.slice('Вайпер'.length)
+      : rest;
     return last ? `${first} ${last}` : first;
   }
 
@@ -103,7 +109,7 @@
     return name;
   }
 
-  const SIBLING_ORDER = ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron'];
+  const SIBLING_ORDER = ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah', 'rina', 'aaron', 'alixan'];
 
   function getChildren(id) {
     return Object.values(FAMILY.members)

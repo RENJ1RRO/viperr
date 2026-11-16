@@ -10,9 +10,9 @@
   const PAD = 120;
 
   const CHILD_ORDER = {
-    cassian: ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron'],
+    cassian: ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah'],
     kai: ['medea', 'yan', 'yuni', 'night', 'kid'],
-    vivien: ['rina'],
+    vivien: ['rina', 'aaron', 'alixan'],
   };
 
   const TILTS = {
@@ -24,6 +24,10 @@
     vivien: 2,
     mikhail: -1.6,
     rina: -1.8,
+    aaron: 2.1,
+    alixan: -2.6,
+    belf: 1.4,
+    noah: -1.9,
     aurora: 2.2,
     mia: -2.4,
     olli: 1.6,
