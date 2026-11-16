@@ -109,7 +109,7 @@
     return name;
   }
 
-  const SIBLING_ORDER = ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah', 'rina', 'aaron', 'alixan'];
+  const SIBLING_ORDER = ['nain', 'kai', 'agares', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah', 'rina', 'aaron', 'alixan'];
 
   function getChildren(id) {
     return Object.values(FAMILY.members)
@@ -160,6 +160,7 @@
   }
 
   function statusLabel(status) {
+    if (status === 'мёртв') return 'УМЕР';
     if (status === 'задержан') return 'ЗАДЕРЖАН';
     if (status === 'скрывается') return 'СКРЫВАЕТСЯ';
     if (status === 'секретно') return 'СЕКРЕТНО';

@@ -10,7 +10,7 @@
   const PAD = 120;
 
   const CHILD_ORDER = {
-    cassian: ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah'],
+    cassian: ['nain', 'kai', 'agares', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah'],
     kai: ['medea', 'yan', 'yuni', 'night', 'kid'],
     vivien: ['rina', 'aaron', 'alixan'],
   };
@@ -180,7 +180,7 @@
       return { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
     }
 
-    const kaiIds = new Set(['kai', 'agares', 'medea', 'yan', 'krisol', 'yuni', 'night', 'kid']);
+    const kaiIds = new Set(['kai', 'medea', 'yan', 'krisol', 'yuni', 'night', 'kid']);
 
     return [
       { label: 'Ветка Кассиана', ...boundsFor((n) => !n.isLore && n.branch === 'cassian' && !kaiIds.has(n.id)) },
@@ -214,6 +214,7 @@
   }
 
   function statusLabel(status) {
+    if (status === 'мёртв') return 'УМЕР';
     if (status === 'задержан') return 'ЗАДЕРЖАН';
     if (status === 'скрывается') return 'СКРЫВАЕТСЯ';
     if (status === 'секретно') return 'СЕКРЕТНО';
@@ -232,6 +233,7 @@
     if (m.isOutsider) el.classList.add('is-outsider');
     if (m.isExSpouse) el.classList.add('is-ex-spouse');
     if (!isLore && m.status === 'задержан') el.classList.add('is-captured');
+    if (!isLore && m.status === 'мёртв') el.classList.add('is-dead');
     el.dataset.id = node.id;
     el.style.left = node.x + 'px';
     el.style.top = node.y + 'px';
