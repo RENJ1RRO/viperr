@@ -10,7 +10,7 @@
   const PAD = 120;
 
   const CHILD_ORDER = {
-    cassian: ['nain', 'kai', 'agares', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah'],
+    cassian: ['nain', 'kai', 'agares', 'vivien', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah'],
     kai: ['medea', 'yan', 'yuni', 'night', 'kid'],
     vivien: ['rina', 'aaron', 'alixan'],
   };
@@ -28,7 +28,6 @@
     alixan: -2.6,
     belf: 1.4,
     noah: -1.9,
-    aurora: 2.2,
     mia: -2.4,
     olli: 1.6,
     madison: 1.2,
