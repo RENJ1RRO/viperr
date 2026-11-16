@@ -15,6 +15,7 @@
     Найт: 'Найта',
     Кид: 'Кида',
     Рина: 'Рины',
+    Аврора: 'Авроры',
     Мия: 'Мии',
     Олли: 'Олли',
     Крисоль: 'Крисоль',
@@ -108,7 +109,7 @@
     return name;
   }
 
-  const SIBLING_ORDER = ['nain', 'kai', 'agares', 'vivien', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah', 'rina', 'aaron', 'alixan'];
+  const SIBLING_ORDER = ['nain', 'kai', 'agares', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah', 'rina', 'aaron', 'alixan'];
 
   function getChildren(id) {
     return Object.values(FAMILY.members)
