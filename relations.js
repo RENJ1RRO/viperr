@@ -2,11 +2,9 @@
   'use strict';
 
   const FIRST_GENITIVE = {
-    Майс: 'Майса',
+    Кассиан: 'Кассиана',
     Найн: 'Найна',
     Кай: 'Кая',
-    Крид: 'Крида',
-    Энджел: 'Энджел',
     Вивьян: 'Вивьян',
     Михаил: 'Михаила',
     Мэдисон: 'Мэдисона',
@@ -17,18 +15,23 @@
     Найт: 'Найта',
     Кид: 'Кида',
     Рина: 'Рины',
-    Аврора: 'Авроры',
     Мия: 'Мии',
     Олли: 'Олли',
     Крисоль: 'Крисоль',
     Агарес: 'Агарес',
-    Скади: 'Скади',
+    Сэмми: 'Сэмми',
+    Белф: 'Белф',
+    Аарон: 'Аарона',
+    Ной: 'Ноя',
   };
 
   function nameGenitive(fullName) {
     const parts = fullName.trim().split(/\s+/);
     const first = FIRST_GENITIVE[parts[0]] || parts[0];
-    const last = parts[1] === 'Вайпер' ? 'Вайпера' : (parts[1] || '');
+    const rest = parts.slice(1).join(' ');
+    const last = /^Вайпер(?![\p{L}])/u.test(rest)
+      ? 'Вайпера' + rest.slice('Вайпер'.length)
+      : rest;
     return last ? `${first} ${last}` : first;
   }
 
@@ -73,6 +76,11 @@
       return `${name} (${parentLabel(to)})`;
     }
 
+    if (from.spouse && to.parent === from.spouse) {
+      const spouse = FAMILY.members[from.spouse];
+      return `${name} (${childLabel(to)} ${nameGenitive(spouse.name)})`;
+    }
+
     if (from.spouse === toId) {
       return `${name} (${spouseLabel(to)})`;
     }
@@ -87,7 +95,7 @@
     }
 
     const childOfFrom = Object.values(FAMILY.members).find(
-      (m) => m.parent === fromId && m.spouse === toId
+      (m) => (m.parent === fromId || (from.spouse && m.parent === from.spouse)) && m.spouse === toId
     );
     if (childOfFrom) {
       return `${name} (${spouseLabel(to)} ${nameGenitive(childOfFrom.name)})`;
@@ -100,7 +108,7 @@
     return name;
   }
 
-  const SIBLING_ORDER = ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli'];
+  const SIBLING_ORDER = ['nain', 'kai', 'agares', 'vivien', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah', 'rina', 'aaron', 'alixan'];
 
   function getChildren(id) {
     return Object.values(FAMILY.members)
@@ -115,7 +123,14 @@
     const links = [];
 
     if (from.parent) links.push(from.parent);
-    if (from.spouse) links.push(from.spouse);
+    if (from.spouse) {
+      links.push(from.spouse);
+      getChildren(from.spouse).forEach((childId) => {
+        if (!links.includes(childId)) links.push(childId);
+        const child = FAMILY.members[childId];
+        if (child && child.spouse && !links.includes(child.spouse)) links.push(child.spouse);
+      });
+    }
     if (from.exSpouse) links.push(from.exSpouse);
     if (from.sibling) links.push(from.sibling);
 
@@ -144,6 +159,7 @@
   }
 
   function statusLabel(status) {
+    if (status === 'мёртв') return 'УМЕР';
     if (status === 'задержан') return 'ЗАДЕРЖАН';
     if (status === 'скрывается') return 'СКРЫВАЕТСЯ';
     if (status === 'секретно') return 'СЕКРЕТНО';

@@ -6,28 +6,28 @@
   const COUPLE_GAP = 72;
   const GEN_GAP_Y = 150;
   const SUBTREE_GAP = 64;
-  const BRANCH_GAP = 180;
   const LORE_GAP = 100;
   const PAD = 120;
 
   const CHILD_ORDER = {
-    mais: ['nain', 'kai', 'vivien', 'aurora', 'mia', 'olli'],
+    cassian: ['nain', 'kai', 'agares', 'vivien', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah'],
     kai: ['medea', 'yan', 'yuni', 'night', 'kid'],
-    vivien: ['rina'],
-    creed: ['madison', 'ron'],
+    vivien: ['rina', 'aaron', 'alixan'],
   };
 
   const TILTS = {
     lore: -3,
-    mais: -1.5,
+    cassian: -1.5,
+    sammy: -2.5,
     nain: 2.5,
     kai: -0.8,
-    creed: 1.8,
-    angel: -2.2,
     vivien: 2,
     mikhail: -1.6,
     rina: -1.8,
-    aurora: 2.2,
+    aaron: 2.1,
+    alixan: -2.6,
+    belf: 1.4,
+    noah: -1.9,
     mia: -2.4,
     olli: 1.6,
     madison: 1.2,
@@ -39,7 +39,6 @@
     night: -1.2,
     kid: 3,
     agares: 1.8,
-    skadi: -2.5,
   };
 
   function member(id) {
@@ -148,12 +147,8 @@
       isLore: true,
     });
 
-    const maisX = DOC_W + LORE_GAP;
-    const maisSpan = layoutSubtree('mais', maisX, gen1Y, 'mais', nodes, links);
-    const creedX = maisX + maisSpan + BRANCH_GAP;
-    layoutSubtree('creed', creedX, gen1Y, 'creed', nodes, links);
-    links.push({ type: 'sibling', from: 'mais', to: 'creed', branch: 'mais' });
-    placeOutsiders(nodes, links);
+    const cassianX = DOC_W + LORE_GAP;
+    layoutSubtree('cassian', cassianX, gen1Y, 'cassian', nodes, links);
 
     const minX = Math.min(...nodes.map((n) => n.x)) - PAD;
     const maxX = Math.max(...nodes.map((n) => n.x + n.w)) + PAD;
@@ -184,31 +179,12 @@
       return { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
     }
 
-    const kaiIds = new Set(['kai', 'agares', 'medea', 'yan', 'krisol', 'yuni', 'night', 'kid']);
+    const kaiIds = new Set(['kai', 'medea', 'yan', 'krisol', 'yuni', 'night', 'kid']);
 
     return [
-      { label: 'Ветка Майса', ...boundsFor((n) => !n.isLore && n.branch === 'mais' && !kaiIds.has(n.id)) },
+      { label: 'Ветка Кассиана', ...boundsFor((n) => !n.isLore && n.branch === 'cassian' && !kaiIds.has(n.id)) },
       { label: 'Ветка Кая', ...boundsFor((n) => kaiIds.has(n.id)) },
-      { label: 'Ветка Крида', ...boundsFor((n) => n.branch === 'creed') },
     ].filter((z) => z.w);
-  }
-
-  function placeOutsiders(nodes, links) {
-    const maisNode = nodes.find((n) => n.id === 'mais');
-    const skadi = member('skadi');
-    if (!maisNode || !skadi) return;
-
-    nodes.push({
-      id: 'skadi',
-      member: skadi,
-      x: maisNode.x - DOC_W - 48,
-      y: maisNode.y + DOC_H * 0.12,
-      w: DOC_W,
-      h: DOC_H,
-      branch: 'mais',
-      isOutsider: true,
-    });
-    links.push({ type: 'ex-spouse', from: 'mais', to: 'skadi', branch: 'mais' });
   }
 
   function clipPoint(node) {
@@ -237,6 +213,7 @@
   }
 
   function statusLabel(status) {
+    if (status === 'мёртв') return 'УМЕР';
     if (status === 'задержан') return 'ЗАДЕРЖАН';
     if (status === 'скрывается') return 'СКРЫВАЕТСЯ';
     if (status === 'секретно') return 'СЕКРЕТНО';
@@ -255,6 +232,7 @@
     if (m.isOutsider) el.classList.add('is-outsider');
     if (m.isExSpouse) el.classList.add('is-ex-spouse');
     if (!isLore && m.status === 'задержан') el.classList.add('is-captured');
+    if (!isLore && m.status === 'мёртв') el.classList.add('is-dead');
     el.dataset.id = node.id;
     el.style.left = node.x + 'px';
     el.style.top = node.y + 'px';

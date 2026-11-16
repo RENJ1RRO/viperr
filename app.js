@@ -108,6 +108,7 @@
     profileCase.textContent = 'Дело № ' + (m.caseId || '—');
     profileStamp.textContent = stamp;
     profileStamp.classList.toggle('is-captured', m.status === 'задержан');
+    profileStamp.classList.toggle('is-dead', m.status === 'мёртв');
     profileGen.textContent =
       m.generation + ' поколение · ' + (FAMILY.branchLabels[m.branch] || '');
     profileName.textContent = m.name;
@@ -151,6 +152,7 @@
     profileCase.textContent = 'Дело № ' + (lore.caseId || '—');
     profileStamp.textContent = 'СЕКРЕТНО';
     profileStamp.classList.remove('is-captured');
+    profileStamp.classList.remove('is-dead');
     profileGen.textContent = lore.subtitle || '';
     profileName.textContent = lore.name;
     profileRole.textContent = lore.role || '—';

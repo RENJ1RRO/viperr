@@ -506,6 +506,13 @@ body {
   border-color: #555;
 }
 
+.a4-sheet.is-dead .a4-sheet__stamp,
+.a4-sheet.is-dead .a4-sheet__status {
+  color: #1c1c1c;
+  border-color: #1c1c1c;
+  opacity: 0.85;
+}
+
 .a4-sheet--lore .a4-sheet__page {
   background: linear-gradient(180deg, #f8f5ee 0%, var(--paper) 40%);
 }
@@ -748,6 +755,11 @@ body.profile-open {
 .a4-full__stamp.is-captured {
   color: #555;
   border-color: #555;
+}
+
+.a4-full__stamp.is-dead {
+  color: #1c1c1c;
+  border-color: #1c1c1c;
 }
 
 .a4-full__title {
