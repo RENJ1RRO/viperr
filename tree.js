@@ -10,8 +10,9 @@
   const PAD = 120;
 
   const CHILD_ORDER = {
-    cassian: ['nain', 'kai', 'agares', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron', 'belf', 'noah'],
-    kai: ['medea', 'yan', 'yuni', 'night', 'kid'],
+    cassian: ['nain', 'kai', 'agares', 'vivien', 'aurora', 'mia', 'olli', 'madison', 'ron', 'belf', 'sky', 'noah'],
+    nain: ['medea'],
+    kai: ['yan', 'yuni', 'night', 'kid'],
     vivien: ['rina', 'aaron', 'alixan'],
   };
 
@@ -28,6 +29,8 @@
     alixan: -2.6,
     aurora: 2.2,
     belf: 1.4,
+    shade: -1.1,
+    sky: 2.6,
     noah: -1.9,
     mia: -2.4,
     olli: 1.6,
@@ -180,7 +183,7 @@
       return { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
     }
 
-    const kaiIds = new Set(['kai', 'medea', 'yan', 'krisol', 'yuni', 'night', 'kid']);
+    const kaiIds = new Set(['kai', 'yan', 'krisol', 'yuni', 'night', 'kid']);
 
     return [
       { label: 'Ветка Кассиана', ...boundsFor((n) => !n.isLore && n.branch === 'cassian' && !kaiIds.has(n.id)) },

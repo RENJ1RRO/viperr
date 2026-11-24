@@ -126,6 +126,16 @@
       profileInitials.textContent = ViperTree.initials(m.name);
     }
 
+    const cameraShot = document.getElementById('cameraShot');
+    const cameraShotImg = document.getElementById('cameraShotImg');
+    if (m.cameraPhoto) {
+      cameraShot.hidden = false;
+      cameraShotImg.src = m.cameraPhoto;
+    } else {
+      cameraShot.hidden = true;
+      cameraShotImg.removeAttribute('src');
+    }
+
     profileMeta.innerHTML = '';
     metaRow(m.isOutsider ? 'Статус' : 'Статус розыска', stamp);
 
@@ -258,4 +268,14 @@
 
   window.addEventListener('resize', fitTree);
   fitTree();
+
+  const madnessToggle = document.getElementById('madnessToggle');
+  function setMadness(on) {
+    document.body.classList.toggle('is-madness', on);
+    madnessToggle.textContent = on ? 'Обычный вид' : 'Безумный вид';
+    madnessToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  madnessToggle.addEventListener('click', () => {
+    setMadness(!document.body.classList.contains('is-madness'));
+  });
 })();
