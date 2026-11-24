@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Архив дел · семья Вайпер</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Special+Elite&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #e8e0d4;
+      --muted: #9a9186;
+      --paper: #1c1b19;
+      --line: rgba(232, 224, 212, 0.14);
+      --blood: #8e1d1d;
+      --thread: #c43737;
+      --font-doc: "Special Elite", "Courier New", monospace;
+      --font-mad: "Caveat", cursive;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    ::selection { background: transparent; color: inherit; }
+    ::-moz-selection { background: transparent; color: inherit; }
+
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+
+    button, .card, .dossier, .mode-toggle {
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    button:focus, button:focus-visible,
+    .card:focus, .card:focus-visible {
+      outline: none;
+    }
+
+    body {
+      font-family: var(--font-doc);
+      color: var(--ink);
+      background: #070707;
+    }
+
+    /* ——— Стена ——— */
+    .wall {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255, 244, 220, 0.05), transparent 42%),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0 1px, transparent 1px 7px),
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.18) 0 1px, transparent 1px 11px),
+        #10100f;
+    }
+
+    .noise {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.18;
+      mix-blend-mode: overlay;
+    }
+
+    .threads {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      overflow: visible;
+    }
+
+    .thread {
+      fill: none;
+      stroke: var(--thread);
+      stroke-width: 1.4;
+      stroke-linecap: round;
+      opacity: 0.8;
+      filter: drop-shadow(0 0 1px rgba(180, 30, 30, 0.4));
+    }
+
+    .thread.is-hot {
+      stroke-width: 2.4;
+      opacity: 1;
+      animation: thread-pulse 0.7s ease-in-out infinite;
+    }
+
+    @keyframes thread-pulse {
+      0%, 100% { stroke-dashoffset: 0; opacity: 0.75; }
+      50% { stroke-dashoffset: 10; opacity: 1; }
+    }
+
+    /* ——— Шапка архива ——— */
+    .mast {
+      position: absolute;
+      z-index: 5;
+      top: 22px;
+      left: 28px;
+      pointer-events: none;
+    }
+
+    .mast small {
+      display: block;
+      color: var(--muted);
+      letter-spacing: 0.22em;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .mast h1 {
+      margin-top: 6px;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+    }
+
+    .mode-toggle {
+      position: absolute;
+      z-index: 30;
+      top: 22px;
+      right: 24px;
+      padding: 10px 16px;
+      font-family: var(--font-doc);
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: rgba(12, 12, 12, 0.72);
+      border: 1px solid rgba(232, 224, 212, 0.28);
+      cursor: crosshair;
+    }
+
+    .mode-toggle:hover { border-color: rgba(232, 224, 212, 0.7); }
+
+    /* ——— Карточки ——— */
+    .card {
+      position: absolute;
+      z-index: 3;
+      width: 168px;
+      padding: 10px 10px 14px;
+      background: linear-gradient(180deg, #242220, #161513);
+      border: 1px solid var(--line);
+      color: inherit;
+      text-align: left;
+      cursor: grab;
+      touch-action: none;
+      transform-origin: 50% 8px;
+      transition: transform 0.25s ease, filter 0.25s ease;
+    }
+
+    .card.is-lifted {
+      z-index: 12;
+      cursor: grabbing;
+      transform: scale(1.07) rotate(-1.4deg);
+      filter: drop-shadow(10px 26px 16px rgba(0, 0, 0, 0.72));
+      animation: sway 1.15s ease-in-out infinite;
+      transition: none;
+    }
+
+    @keyframes sway {
+      0%, 100% { transform: scale(1.07) rotate(-2deg); }
+      50% { transform: scale(1.07) rotate(1.6deg); }
+    }
+
+    /* PHOTO: замените .portrait на <img class="portrait-img" src="файл.png" alt=""> */
+    .portrait {
+      height: 112px;
+      margin-bottom: 10px;
+      background:
+        radial-gradient(circle at 50% 38%, rgba(232, 224, 212, 0.55) 0 16px, transparent 17px),
+        radial-gradient(ellipse at 50% 78%, rgba(232, 224, 212, 0.28) 0 28px, transparent 29px),
+        repeating-linear-gradient(180deg, transparent 0 10px, rgba(0,0,0,0.18) 10px 11px),
+        #2a2826;
+      border: 1px solid rgba(232, 224, 212, 0.08);
+    }
+
+    .portrait-img {
+      display: block;
+      width: 100%;
+      height: 112px;
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.05);
+    }
+
+    .role {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .card h2 {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.15;
+    }
+
+    .pin {
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      margin-left: -5px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ddd, #6a6560 60%, #2a2a2a);
+      box-shadow: 0 2px 2px rgba(0,0,0,0.45);
+    }
+
+    /* ——— Досье ——— */
+    .focus-dim {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      background: rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s ease;
+    }
+
+    body.is-focus .focus-dim { opacity: 1; pointer-events: auto; }
+    body.is-focus .wall-shift {
+      transform: scale(1.04);
+      filter: blur(3px);
+      transition: transform 0.55s ease, filter 0.55s ease;
+    }
+
+    .wall-shift { transform-origin: 50% 40%; transition: transform 0.55s ease, filter 0.55s ease; }
+
+    .dossier {
+      position: absolute;
+      z-index: 22;
+      top: 50%;
+      left: 50%;
+      width: min(520px, calc(100% - 40px));
+      max-height: min(78vh, 640px);
+      overflow: auto;
+      padding: 28px 28px 32px;
+      background: #141311;
+      border: 1px solid rgba(232, 224, 212, 0.2);
+      transform: translate(-50%, -46%) scale(0.96);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.45s ease;
+    }
+
+    body.is-focus .dossier {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .dossier header { display: flex; justify-content: space-between; gap: 16px; }
+    .dossier .kicker { color: var(--muted); letter-spacing: 0.18em; font-size: 11px; text-transform: uppercase; }
+    .dossier h3 { margin: 8px 0 4px; font-size: 28px; font-weight: 400; }
+    .close-dossier {
+      width: 36px;
+      height: 36px;
+      font-family: var(--font-doc);
+      font-size: 22px;
+      color: var(--ink);
+      background: transparent;
+      border: 1px solid var(--line);
+      cursor: pointer;
+    }
+
+    .dossier-portrait {
+      height: 140px;
+      margin: 16px 0;
+      background:
+        radial-gradient(circle at 50% 36%, rgba(232,224,212,0.5) 0 22px, transparent 23px),
+        radial-gradient(ellipse at 50% 88%, rgba(232,224,212,0.25) 0 40px, transparent 41px),
+        #2a2826;
+    }
+
+    .lore {
+      min-height: 7em;
+      font-size: 15px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .glitch-char {
+      color: #ff3b3b;
+      animation: char-flash 0.18s linear 1;
+    }
+
+    @keyframes char-flash {
+      from { color: #ff3b3b; }
+      to { color: inherit; }
+    }
+
+    /* ——— Безумный режим ——— */
+    .bulb, .vignette, .blood, .tv-static { pointer-events: none; }
+
+    .bulb {
+      position: absolute;
+      z-index: 4;
+      top: -18vh;
+      left: 50%;
+      width: 90vw;
+      height: 78vh;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse at 50% 0%, rgba(255, 214, 160, 0.0), transparent 62%);
+      mix-blend-mode: screen;
+      opacity: 0;
+    }
+
+    .vignette {
+      position: absolute;
+      z-index: 6;
+      inset: -8%;
+      background: radial-gradient(ellipse at center, transparent 36%, rgba(0, 0, 0, 0.78) 100%);
+      opacity: 0.55;
+    }
+
+    .blood { position: absolute; z-index: 1; inset: 0; opacity: 0; }
+
+    .tv-static {
+      position: fixed;
+      z-index: 40;
+      inset: 0;
+      opacity: 0;
+      background: #111;
+    }
+
+    .tv-static.is-on {
+      animation: static-burst 0.7s linear forwards;
+    }
+
+    body.is-madness {
+      background: #050201;
+    }
+
+    body.is-madness .wall {
+      background:
+        radial-gradient(ellipse at 50% -10%, rgba(120, 20, 16, 0.35), transparent 46%),
+        repeating-linear-gradient(90deg, rgba(80, 0, 0, 0.16) 0 2px, transparent 2px 18px),
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.35) 0 1px, transparent 1px 9px),
+        #140706;
+    }
+
+    body.is-madness .noise { opacity: 0.38; }
+
+    body.is-madness .bulb {
+      opacity: 1;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255, 196, 130, 0.55), rgba(120, 20, 12, 0.08) 42%, transparent 68%);
+      animation: flicker 2.8s infinite;
+    }
+
+    body.is-madness .vignette {
+      animation: breathe 7.5s ease-in-out infinite;
+    }
+
+    body.is-madness .blood { opacity: 1; }
+    body.is-madness .blood .stain { transform-origin: center; animation: stain-pulse 6s ease-in-out infinite; }
+    body.is-madness .blood .stain:nth-child(2) { animation-delay: -2s; }
+    body.is-madness .blood .stain:nth-child(3) { animation-delay: -4s; }
+
+    body.is-madness .mast h1,
+    body.is-madness .card h2,
+    body.is-madness .dossier h3,
+    body.is-madness .lore {
+      font-family: var(--font-mad);
+      animation: jitter 0.42s steps(2, end) infinite;
+    }
+
+    body.is-madness .card {
+      background: #efe6d2;
+      color: #1a0a0a;
+      border: none;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.45);
+      transform: rotate(var(--tilt, -2deg));
+    }
+
+    body.is-madness .card.is-lifted {
+      transform: scale(1.08) rotate(-2deg);
+      filter: drop-shadow(14px 32px 18px rgba(0, 0, 0, 0.75));
+      animation: sway 1.15s ease-in-out infinite;
+    }
+
+    body.is-madness .card .role { color: #6d3a32; }
+    body.is-madness .card h2 { font-size: 26px; }
+
+    body.is-madness .portrait,
+    body.is-madness .dossier-portrait {
+      filter: sepia(0.7) contrast(0.92);
+      box-shadow: inset 0 0 0 8px #efe6d2;
+    }
+
+    body.is-madness .card::after {
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      width: 46px;
+      height: 14px;
+      transform: translateX(-50%) rotate(-4deg);
+      background: rgba(210, 196, 160, 0.72);
+    }
+
+    body.is-madness .pin { display: none; }
+
+    body.is-madness,
+    body.is-madness * {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%23e23b3b' stroke-width='1.4'/%3E%3Cpath d='M16 2v7M16 23v7M2 16h7M23 16h7' stroke='%23e23b3b' stroke-width='1.4'/%3E%3C/svg%3E") 16 16, crosshair;
+    }
+
+    body.is-madness.is-glitch .wall-shift {
+      animation: screen-glitch 0.2s linear 1;
+    }
+
+    body.is-focus.is-madness .dossier {
+      background: #1a0c0c;
+      border-color: rgba(180, 40, 40, 0.45);
+    }
+
+    @keyframes flicker {
+      0%, 18%, 22%, 55%, 100% { opacity: 0.92; }
+      19% { opacity: 0.25; }
+      21% { opacity: 0.7; }
+      56% { opacity: 0.15; }
+      58% { opacity: 0.85; }
+      78% { opacity: 0.4; }
+      80% { opacity: 1; }
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 0.82; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+
+    @keyframes stain-pulse {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes jitter {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(0.4px, -0.3px); }
+      50% { transform: translate(-0.5px, 0.2px); }
+      75% { transform: translate(0.2px, 0.4px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    @keyframes screen-glitch {
+      0% { transform: translate(0, 0); filter: none; }
+      30% { transform: translate(-8px, 2px); filter: invert(1) hue-rotate(30deg); }
+      60% { transform: translate(6px, -3px); filter: contrast(1.6); }
+      100% { transform: translate(0, 0); filter: none; }
+    }
+
+    @keyframes static-burst {
+      0% { opacity: 0.95; }
+      40% { opacity: 0.7; }
+      100% { opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bulb, .vignette, .card.is-lifted, .thread.is-hot,
+      body.is-madness .mast h1, body.is-madness .card h2 { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="tv-static" id="tvStatic" aria-hidden="true">
+    <svg width="100%" height="100%" preserveAspectRatio="none">
+      <filter id="staticNoise">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="3">
+          <animate attributeName="seed" values="2;8;3;11;5" dur="0.35s" repeatCount="indefinite"/>
+        </feTurbulence>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#staticNoise)"/>
+    </svg>
+  </div>
+
+  <button class="mode-toggle" id="modeToggle" type="button" aria-pressed="false">Безумный вид</button>
+
+  <div class="wall" id="wall">
+    <div class="wall-shift" id="wallShift">
+      <svg class="noise" aria-hidden="true">
+        <filter id="grain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#grain)"/>
+      </svg>
+
+      <svg class="blood" id="blood" viewBox="0 0 1200 800" aria-hidden="true">
+        <defs>
+          <filter id="bleed" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="8"/>
+          </filter>
+        </defs>
+        <ellipse class="stain" cx="180" cy="140" rx="90" ry="36" fill="#6e1010" filter="url(#bleed)"/>
+        <ellipse class="stain" cx="980" cy="220" rx="120" ry="28" fill="#7a1414" filter="url(#bleed)"/>
+        <path class="stain" d="M640 70c20 40 8 90-6 120" stroke="#8a1818" stroke-width="10" fill="none" filter="url(#bleed)"/>
+        <ellipse class="stain" cx="400" cy="640" rx="70" ry="22" fill="#5c1010" filter="url(#bleed)"/>
+      </svg>
+
+      <div class="bulb" aria-hidden="true"></div>
+
+      <header class="mast">
+        <small>Дело V-000 · штат South</small>
+        <h1>Архив семьи Вайпер</h1>
+      </header>
+
+      <svg class="threads" id="threads"></svg>
+      <div id="board"></div>
+    </div>
+
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="focus-dim" id="focusDim"></div>
+
+    <article class="dossier" id="dossier" hidden>
+      <header>
+        <div>
+          <p class="kicker" id="dossierRole"></p>
+          <h3 id="dossierName"></h3>
+        </div>
+        <button class="close-dossier" id="closeDossier" type="button" aria-label="Закрыть">×</button>
+      </header>
+      <!-- PHOTO: сюда можно вставить <img class="portrait-img" id="dossierPhoto"> -->
+      <div class="dossier-portrait" id="dossierPortrait"></div>
+      <p class="lore" id="dossierLore"></p>
+    </article>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* Карточки. portrait — CSS-силуэт. Чтобы поставить фото, добавьте поле photo: "1.png". */
+      var PEOPLE = {
+        cassian: {
+          name: "Кассиан Вайпер",
+          role: "Глава семьи",
+          lore: "Кассиан Вайпер держит род без приказов. South знает три имени и ни одной чистой биографии. Он почти не говорит: пауза тяжелее вопроса, и люди сами заполняют её лишним."
+        },
+        nain: {
+          name: "Найн Вайпер",
+          role: "Сын Кассиана · заместитель",
+          lore: "Найн — тот, кого нет. Его видели в трёх городах за неделю: другая походка, тот же крест на внутреннем шве. Заместитель, которого легче описать, чем поймать."
+        },
+        belf: {
+          name: "Белф Вайпер",
+          role: "Дочь Кассиана",
+          lore: "Белф с детства знала: её кровь — универсальный антидот. На спор она выпила «Слезу Бездны» и выжила. Диплом защищала с температурой 38, тема — яд гадюки и сердце."
+        },
+        shade: {
+          name: "Шейд Вайпер",
+          role: "Муж Белф · Enid",
+          lore: "Шейд «Enid» не пьёт яд сам. Он считает, сколько выдержит Белф, и закрывает дверь лаборатории раньше, чем South успевает записать номер. Муж, которого долго не отделяли от жены."
+        },
+        medea: {
+          name: "Медея Вайпер",
+          role: "Дочь Найна",
+          lore: "Медея — дочь Найна. Её метод называют мягкой работой: записи исчезают, свидетели перестают быть уверены. Не крик. Тихая регистратура."
+        },
+        sky: {
+          name: "Скай Вайпер",
+          role: "Сын Кассиана · Hellnex",
+          lore: "Скай «Hellnex» оставляет след там, где камера уже смотрит, и уходит, пока запись ещё пишется. Кассиан не произносит это имя вслух. В списке детей оно всё равно есть."
+        }
+      };
+
+      var LINKS = [
+        { from: "cassian", to: "nain", label: "сын" },
+        { from: "cassian", to: "belf", label: "дочь" },
+        { from: "cassian", to: "sky", label: "сын" },
+        { from: "nain", to: "medea", label: "дочь" },
+        { from: "belf", to: "shade", label: "муж" }
+      ];
+
+      var wall = document.getElementById("wall");
+      var board = document.getElementById("board");
+      var threads = document.getElementById("threads");
+      var positions = {};
+      var cards = {};
+      var drag = null;
+      var typer = null;
+
+      function placeInitial() {
+        var w = wall.clientWidth;
+        var h = wall.clientHeight;
+        positions = {
+          cassian: { x: w * 0.40, y: h * 0.08 },
+          nain: { x: w * 0.14, y: h * 0.38 },
+          medea: { x: w * 0.12, y: h * 0.66 },
+          belf: { x: w * 0.42, y: h * 0.42 },
+          shade: { x: w * 0.60, y: h * 0.42 },
+          sky: { x: w * 0.70, y: h * 0.12 }
+        };
+      }
+
+      function renderCards() {
+        Object.keys(PEOPLE).forEach(function (id) {
+          var person = PEOPLE[id];
+          var btn = document.createElement("button");
+          btn.className = "card";
+          btn.id = "card-" + id;
+          btn.type = "button";
+          btn.dataset.id = id;
+          btn.style.left = positions[id].x + "px";
+          btn.style.top = positions[id].y + "px";
+          btn.style.setProperty("--tilt", ((id.length % 5) - 2) + "deg");
+          btn.innerHTML =
+            '<span class="pin" aria-hidden="true"></span>' +
+            '<div class="portrait" aria-hidden="true"></div>' +
+            '<span class="role"></span><h2></h2>';
+          btn.querySelector(".role").textContent = person.role;
+          btn.querySelector("h2").textContent = person.name;
+          board.appendChild(btn);
+          cards[id] = btn;
+          bindCard(btn, id);
+        });
+      }
+
+      function bindCard(btn, id) {
+        btn.addEventListener("pointerdown", function (event) {
+          if (event.button !== 0) return;
+          drag = {
+            id: id,
+            sx: event.clientX,
+            sy: event.clientY,
+            ox: positions[id].x,
+            oy: positions[id].y,
+            moved: false
+          };
+          btn.setPointerCapture(event.pointerId);
+          btn.classList.add("is-lifted");
+        });
+
+        btn.addEventListener("pointermove", function (event) {
+          if (!drag || drag.id !== id) return;
+          var dx = event.clientX - drag.sx;
+          var dy = event.clientY - drag.sy;
+          if (Math.abs(dx) + Math.abs(dy) > 4) drag.moved = true;
+          positions[id].x = drag.ox + dx;
+          positions[id].y = drag.oy + dy;
+          btn.style.left = positions[id].x + "px";
+          btn.style.top = positions[id].y + "px";
+          drawThreads(id);
+        });
+
+        btn.addEventListener("pointerup", function () {
+          if (!drag || drag.id !== id) return;
+          var moved = drag.moved;
+          drag = null;
+          btn.classList.remove("is-lifted");
+          if (!moved) openDossier(id);
+        });
+
+        btn.addEventListener("pointerenter", function () { highlight(id, true); });
+        btn.addEventListener("pointerleave", function () { highlight(id, false); });
+      }
+
+      function anchor(id) {
+        var el = cards[id];
+        var wr = wall.getBoundingClientRect();
+        var er = el.getBoundingClientRect();
+        return {
+          x: er.left - wr.left + er.width / 2,
+          y: er.top - wr.top + 8
+        };
+      }
+
+      function drawThreads(hotId) {
+        threads.setAttribute("viewBox", "0 0 " + wall.clientWidth + " " + wall.clientHeight);
+        threads.innerHTML = "";
+        LINKS.forEach(function (link) {
+          var a = anchor(link.from);
+          var b = anchor(link.to);
+          var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          var mx = (a.x + b.x) / 2;
+          var my = (a.y + b.y) / 2 + Math.max(18, Math.abs(b.x - a.x) * 0.08);
+          path.setAttribute("d", "M " + a.x + " " + a.y + " Q " + mx + " " + my + " " + b.x + " " + b.y);
+          path.setAttribute("class", "thread" + (hotId && (hotId === link.from || hotId === link.to) ? " is-hot" : ""));
+          path.setAttribute("stroke-dasharray", "7 5");
+          threads.appendChild(path);
+        });
+      }
+
+      function highlight(id, on) {
+        drawThreads(on ? id : null);
+      }
+
+      var dossier = document.getElementById("dossier");
+      var loreEl = document.getElementById("dossierLore");
+
+      function openDossier(id) {
+        var person = PEOPLE[id];
+        document.body.classList.add("is-focus");
+        dossier.hidden = false;
+        document.getElementById("dossierRole").textContent = person.role;
+        document.getElementById("dossierName").textContent = person.name;
+        if (typer) clearInterval(typer);
+        loreEl.textContent = "";
+        var i = 0;
+        typer = setInterval(function () {
+          if (i >= person.lore.length) {
+            clearInterval(typer);
+            typer = null;
+            return;
+          }
+          var ch = person.lore.charAt(i);
+          i += 1;
+          if (Math.random() < 0.035) {
+            var span = document.createElement("span");
+            span.className = "glitch-char";
+            span.textContent = ch;
+            loreEl.appendChild(span);
+          } else {
+            loreEl.appendChild(document.createTextNode(ch));
+          }
+        }, 16);
+      }
+
+      function closeDossier() {
+        document.body.classList.remove("is-focus");
+        if (typer) clearInterval(typer);
+        typer = null;
+        setTimeout(function () { dossier.hidden = true; }, 400);
+      }
+
+      document.getElementById("closeDossier").addEventListener("click", closeDossier);
+      document.getElementById("focusDim").addEventListener("click", closeDossier);
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeDossier();
+      });
+
+      var toggle = document.getElementById("modeToggle");
+      var staticLayer = document.getElementById("tvStatic");
+
+      function setMadness(on) {
+        staticLayer.classList.remove("is-on");
+        void staticLayer.offsetWidth;
+        staticLayer.classList.add("is-on");
+        document.body.classList.toggle("is-madness", on);
+        toggle.textContent = on ? "Обычный вид" : "Безумный вид";
+        toggle.setAttribute("aria-pressed", on ? "true" : "false");
+        drawThreads(null);
+      }
+
+      toggle.addEventListener("click", function () {
+        setMadness(!document.body.classList.contains("is-madness"));
+      });
+
+      function scheduleGlitch() {
+        var wait = 10000 + Math.random() * 5000;
+        setTimeout(function () {
+          if (document.body.classList.contains("is-madness")) {
+            document.body.classList.add("is-glitch");
+            setTimeout(function () { document.body.classList.remove("is-glitch"); }, 200);
+          }
+          scheduleGlitch();
+        }, wait);
+      }
+
+      window.addEventListener("resize", function () { drawThreads(null); });
+
+      placeInitial();
+      renderCards();
+      drawThreads(null);
+      scheduleGlitch();
+    })();
+  </script>
+</body>
+</html>
